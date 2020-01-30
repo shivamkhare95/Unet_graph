@@ -111,10 +111,10 @@ def train_net(net,
                         writer.add_images('masks/pred', torch.sigmoid(masks_pred) > 0.5, global_step)
                     else:
                         writer.add_images('masks/true', true_masks, global_step)
-                        masks_prob = torch.nn.functional.sofmax(masks_pred, dim=1)
+                        masks_prob = torch.nn.functional.softmax(mask_pred, axis=1)
                         writer.add_images('masks/pred_bg', masks_prob[:,2,:,:]>0.5, global_step)
-                        writer.add_images('masks/pred_', masks_prob[:,2,:,:]>0.5, global_step)
-                        writer.add_images('masks/pred_bg', masks_prob[:,2,:,:]>0.5, global_step)
+                        writer.add_images('masks/pred_edge', masks_prob[:,1,:,:]>0.5, global_step)
+                        writer.add_images('masks/pred_node', masks_prob[:,0,:,:]>0.5, global_step)
 
         if save_cp:
             try:
@@ -160,7 +160,7 @@ if __name__ == '__main__':
     #   - For 1 class and background, use n_classes=1
     #   - For 2 classes, use n_classes=1
     #   - For N > 2 classes, use n_classes=N
-    net = UNet(n_channels=3, n_classes=1)
+    net = UNet(n_channels=3, n_classes=3)
     logging.info(f'Network:\n'
                  f'\t{net.n_channels} input channels\n'
                  f'\t{net.n_classes} output channels (classes)\n'
