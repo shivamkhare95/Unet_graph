@@ -110,11 +110,11 @@ def train_net(net,
                         writer.add_images('masks/true', true_masks, global_step)
                         writer.add_images('masks/pred', torch.sigmoid(masks_pred) > 0.5, global_step)
                     else:
-                        writer.add_images('masks/true', true_masks, global_step)
-                        masks_prob = torch.nn.functional.softmax(mask_pred, axis=1)
-                        writer.add_images('masks/pred_bg', masks_prob[:,2,:,:]>0.5, global_step)
-                        writer.add_images('masks/pred_edge', masks_prob[:,1,:,:]>0.5, global_step)
-                        writer.add_images('masks/pred_node', masks_prob[:,0,:,:]>0.5, global_step)
+                        writer.add_images('masks/true', batch['mask'], global_step)
+                        masks_prob = torch.nn.functional.softmax(masks_pred, dim=1)
+                        writer.add_images('masks/pred_bg', (masks_prob[:,2,:,:]>0.5)[:,None,:,:], global_step)
+                        writer.add_images('masks/pred_edge', (masks_prob[:,1,:,:]>0.5)[:,None,:,:], global_step)
+                        writer.add_images('masks/pred_node', (masks_prob[:,0,:,:]>0.5)[:,None,:,:], global_step)
 
         if save_cp:
             try:
